@@ -1,39 +1,34 @@
+CREATE DATABASE IF NOT EXISTS ss5; 
+
 USE ss5;
 
-CREATE TABLE employees (
-	emp_id INT PRIMARY KEY AUTO_INCREMENT,
-    full_name VARCHAR(50) NOT NULL,
-    department VARCHAR(50),
-    salary FLOAT
+CREATE TABLE IF NOT EXISTS products (
+	product_id INT PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(50) NOT NULL UNIQUE,
+    category VARCHAR(50),
+    price FLOAT NOT NULL
 );
 
-INSERT INTO employees 
+INSERT INTO products (product_name, category, price)
 VALUES 
-(1, 'Nguyen Van A', 's1', 10000000),
-(2, 'Nguyen Thi B', 's2', 15000000),
-(3, 'Nguyen Van C', 's3', 12000000),
-(4, 'Nguyen Thi D', 's2', 18000000),
-(5, 'Nguyen Van E', 's3', 12000000),
-(6, 'Nguyen Thi F', 's2', 18000000);
+('samsung galaxy note 6', 'phone', 10000000),
+('iphone 15', 'phone', 12000000),
+('dell inspiron', 'laptop', 20000000),
+('macbook air', 'macbook', 11000000),
+('asus pro', 'laptop', 25000000);
 
--- Mỗi phòng có bao nhiêu nhân viên
-SELECT department AS 'Phòng', COUNT(department) AS 'Số nhân viên'
-FROM employees
-GROUP BY department;
+-- các sản phẩm có giá cao hơn giá trung bình của tất cả sản phẩm
+SELECT * FROM products
+WHERE price > 
+	(SELECT AVG(price) FROM products);
+    
+-- giá cao nhất trong từng loại sản phẩm
+SELECT category AS 'Sản phẩm', MAX(price) AS 'Giá cao nhất'
+FROM products
+GROUP BY category;
 
--- Lương trung bình của từng phòng ban
-SELECT department AS 'Phòng', AVG(salary) AS 'Lương trung bình'
-FROM employees
-GROUP BY department;
-
--- Các phòng ban có trên 3 nhân viên
-SELECT department AS 'Phòng', COUNT(emp_id) AS 'Số nhân viên'
-FROM employees
-GROUP BY department
-HAVING COUNT(emp_id) > 3;
-
--- Các phòng ban có lương trung bình lớn hơn 12.000.000
-SELECT department AS 'Phòng', AVG(salary) AS 'Lương trung bình'
-FROM employees
-GROUP BY department
-HAVING AVG(salary) > 12000000;
+-- có ít nhất 1 sản phẩm giá trên 20.000.000
+SELECT category
+FROM products
+GROUP BY category
+HAVING MAX(price) > 20000000;
